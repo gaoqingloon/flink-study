@@ -1,6 +1,6 @@
 package com.lolo.flink.time
 
-import com.bjsxt.flink.source.StationLog
+import com.lolo.flink.source.StationLog
 import org.apache.flink.api.common.functions.AggregateFunction
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor
@@ -28,19 +28,20 @@ object LatenessDataOnWindow {
 
       //引入Watermark，数据是乱序的，并且大多数数据延迟2秒
       .assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor[StationLog](Time.seconds(2)) { //水位线延迟2秒
-      override def extractTimestamp(element: StationLog) = {
+      override def extractTimestamp(element: StationLog): Long = {
         element.callTime
       }
     })
 
     //定义一个侧输出流的标签
-    var lateTag = new OutputTag[StationLog]("late")
+    val lateTag = new OutputTag[StationLog]("late")
 
     //分组，开窗
     val result: DataStream[String] = stream.keyBy(_.sid)
       .timeWindow(Time.seconds(10), Time.seconds(5))
       //设置迟到的数据超出了2秒的情况下，怎么办。交给AllowedLateness处理
-      //也分两种情况，第一种：允许数据迟到5秒（迟到2-5秒），再次延迟触发窗口函数。触发的条是：Watermark < end-of-window + allowedlateness
+      //也分两种情况，
+      //第一种：允许数据迟到5秒（迟到2-5秒），再次延迟触发窗口函数。触发的条件是：Watermark < end-of-window + allowedlateness
       //第二种：迟到的数据在5秒以上，输出到则流中
       .allowedLateness(Time.seconds(5)) //运行数据迟到5秒，还可以触发窗口
       .sideOutputLateData(lateTag)
@@ -50,8 +51,6 @@ object LatenessDataOnWindow {
     result.print("main")
 
     streamEnv.execute()
-
-
   }
 
   //增量聚会的函数
@@ -67,12 +66,12 @@ object LatenessDataOnWindow {
 
   class OutputResultWindowFunction extends WindowFunction[Long, String, String, TimeWindow] {
     override def apply(key: String, window: TimeWindow, input: Iterable[Long], out: Collector[String]): Unit = {
-      var value = input.iterator.next()
-      var sb = new StringBuilder
+      val value = input.iterator.next()
+      val sb = new StringBuilder
       sb.append("窗口的范围:").append(window.getStart).append("---").append(window.getEnd)
       sb.append("\n")
       sb.append("当前的基站ID是:").append(key)
-        .append("， 呼叫的数量是:").append(value)
+        .append("，呼叫的数量是:").append(value)
       out.collect(sb.toString())
     }
   }

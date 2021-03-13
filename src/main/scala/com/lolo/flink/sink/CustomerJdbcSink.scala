@@ -2,7 +2,7 @@ package com.lolo.flink.sink
 
 import java.sql.{Connection, DriverManager, PreparedStatement}
 
-import com.bjsxt.flink.source.{MyCustomerSource, StationLog}
+import com.lolo.flink.source.{MyCustomerSource, StationLog}
 import org.apache.flink.configuration.Configuration
 import org.apache.flink.streaming.api.functions.sink.{RichSinkFunction, SinkFunction}
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment

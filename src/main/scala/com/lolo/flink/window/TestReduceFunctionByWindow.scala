@@ -4,9 +4,11 @@ import com.lolo.flink.source.StationLog
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
 import org.apache.flink.streaming.api.windowing.time.Time
 
+/**
+  * 每隔5秒统计每个基站的日志数量
+  */
 object TestReduceFunctionByWindow {
 
-  //每隔5秒统计每个基站的日志数量
   def main(args: Array[String]): Unit = {
     val streamEnv: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     import org.apache.flink.streaming.api.scala._

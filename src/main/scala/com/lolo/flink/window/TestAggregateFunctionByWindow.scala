@@ -9,9 +9,10 @@ import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
 
+/**
+  * 每隔3秒计算最近5秒内，每个基站的日志数量
+  */
 object TestAggregateFunctionByWindow {
-
-  //每隔3秒计算最近5秒内，每个基站的日志数量
   def main(args: Array[String]): Unit = {
     val streamEnv: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     import org.apache.flink.streaming.api.scala._
@@ -47,7 +48,10 @@ object TestAggregateFunctionByWindow {
     override def merge(a: Long, b: Long): Long = a + b
   }
 
-  //WindowFunction输入数据来自于AggregateFunction，在窗口结束的时候先执行AggregateFunction对象的getResult，然后在执行apply
+  /**
+    * WindowFunction输入数据来自于AggregateFunction，
+    * 在窗口结束的时候先执行AggregateFunction对象的getResult，然后再执行apply
+    */
   class MyWindowFunction extends WindowFunction[Long, (String, Long), String, TimeWindow] {
     override def apply(key: String, window: TimeWindow, input: Iterable[Long], out: Collector[(String, Long)]): Unit = {
       out.collect((key, input.iterator.next())) //next得到第一个值，迭代器中只有一个值

@@ -18,11 +18,12 @@ object BatchWordCount {
     //读数据
     val data: DataSet[String] = env.readTextFile(dataPath.getPath) //DataSet ==> spark RDD
 
-    //计算并且打印结果
-    data.flatMap(_.split(" "))
+    //计算
+    val result: AggregateDataSet[(String, Int)] = data.flatMap(_.split(" "))
       .map((_, 1))
-      .groupBy(0)
-      .sum(1)
-      .print()
+      .groupBy(0) //其中0代表元组中的下标，“0”下标代表：单词
+      .sum(1) //其中1代表元组中的下标，“1”下标代表：单词出现的次数
+    //打印结果
+    result.print()
   }
 }

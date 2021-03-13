@@ -1,6 +1,6 @@
 package com.lolo.flink.sink
 
-import com.bjsxt.flink.source.{MyCustomerSource, StationLog}
+import com.lolo.flink.source.{MyCustomerSource, StationLog}
 import org.apache.flink.api.common.serialization.SimpleStringEncoder
 import org.apache.flink.core.fs.Path
 import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink

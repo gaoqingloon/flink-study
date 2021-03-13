@@ -8,9 +8,10 @@ import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
 
+/**
+  * 每隔5秒统计每个基站的日志数量
+  */
 object TestProcessWindowFunctionByWindow {
-
-  //每隔5秒统计每个基站的日志数量
   def main(args: Array[String]): Unit = {
     val streamEnv: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     import org.apache.flink.streaming.api.scala._
@@ -25,7 +26,7 @@ object TestProcessWindowFunctionByWindow {
     //开窗
     stream.map(log => (log.sid, 1))
       .keyBy(_._1)
-      //      .timeWindow(Time.seconds(5))//开窗
+      //.timeWindow(Time.seconds(5))//开窗
       .window(TumblingProcessingTimeWindows.of(Time.seconds(5)))
       .process(new ProcessWindowFunction[(String, Int), (String, Long), String, TimeWindow] { //一个窗口结束的时候调用一次(一个分组执行一次)
         override def process(key: String, context: Context, elements: Iterable[(String, Int)], out: Collector[(String, Long)]): Unit = {

@@ -20,8 +20,8 @@ object FlinkStreamWordCount {
     //4、转换和处理数据
     val result: DataStream[(String, Int)] = stream.flatMap(_.split(" "))
       .map((_, 1)).setParallelism(2)
-      .keyBy(0) //分组算子  : 0 或者 1 代表下标。前面的DataStream[二元组] , 0代表单词 ，1代表单词出现的次数
-      .sum(1).setParallelism(2) //聚会累加算子
+      .keyBy(0) //分组算子 : 0 或者 1 代表下标。前面的DataStream[二元组], 0代表单词，1代表单词出现的次数
+      .sum(1).setParallelism(2) //聚合累加算子
 
     //5、打印结果
     result.print("结果").setParallelism(1)

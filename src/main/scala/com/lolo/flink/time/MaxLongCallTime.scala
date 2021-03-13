@@ -1,6 +1,6 @@
 package com.lolo.flink.time
 
-import com.bjsxt.flink.source.StationLog
+import com.lolo.flink.source.StationLog
 import org.apache.flink.api.common.functions.ReduceFunction
 import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
@@ -10,7 +10,7 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.util.Collector
 
 /**
-  * 每隔5秒统计一下最近10秒内，每个基站中通话时间最长的一次通话发生的时间还有，
+  * 每隔5秒统计一下最近10秒内，每个基站中通话时间最长的一次通话发生的 时间，
   * 主叫号码，被叫号码，通话时长，并且还得告诉我们当前发生的时间范围（10秒）
   */
 object MaxLongCallTime {
